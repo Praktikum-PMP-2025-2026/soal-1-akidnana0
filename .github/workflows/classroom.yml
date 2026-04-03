@@ -1,0 +1,135 @@
+name: Autograding Tests
+on:
+  - push
+  - workflow_dispatch
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile soal1
+        run: gcc -std=c11 -O2 -Wall -Wextra -o soal1 soal1.c
+
+      - name: Test Case 1
+        id: tc1
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC1 - radiasi tinggi"
+          setup-command: ""
+          command: bash -c 'out=$(printf "2 371 6 10\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "TOLAK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 2
+        id: tc2
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC2 - suhu karantina"
+          setup-command: ""
+          command: bash -c 'out=$(printf "2 390 1 10\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "KARANTINA" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 3
+        id: tc3
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC3 - izin1 jam terlalu pagi"
+          setup-command: ""
+          command: bash -c 'out=$(printf "1 370 0 5\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "TOLAK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 4
+        id: tc4
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC4 - izin1 jam terlalu malam"
+          setup-command: ""
+          command: bash -c 'out=$(printf "1 370 0 21\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "TOLAK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 5
+        id: tc5
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC5 - izin1 masuk"
+          setup-command: ""
+          command: bash -c 'out=$(printf "1 371 2 10\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "MASUK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 6
+        id: tc6
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC6 - izin2 masuk batas bawah jam"
+          setup-command: ""
+          command: bash -c 'out=$(printf "2 371 2 8\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "MASUK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 7
+        id: tc7
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC7 - izin2 masuk batas atas jam"
+          setup-command: ""
+          command: bash -c 'out=$(printf "2 371 1 18\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "MASUK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 8
+        id: tc8
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC8 - izin2 pemeriksaan radiasi"
+          setup-command: ""
+          command: bash -c 'out=$(printf "2 371 3 10\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "PEMERIKSAAN" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 9
+        id: tc9
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC9 - izin3 masuk"
+          setup-command: ""
+          command: bash -c 'out=$(printf "3 379 0 12\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "MASUK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Test Case 10
+        id: tc10
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: "TC10 - izin3 tolak"
+          setup-command: ""
+          command: bash -c 'out=$(printf "3 380 0 12\n" | ./soal1 | tr -d "\r" | sed "s/[[:space:]]*$//"); [[ "$out" == "TOLAK" ]]'
+          timeout: 2
+          max-score: 10
+
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          TC1_RESULTS: "${{steps.tc1.outputs.result}}"
+          TC2_RESULTS: "${{steps.tc2.outputs.result}}"
+          TC3_RESULTS: "${{steps.tc3.outputs.result}}"
+          TC4_RESULTS: "${{steps.tc4.outputs.result}}"
+          TC5_RESULTS: "${{steps.tc5.outputs.result}}"
+          TC6_RESULTS: "${{steps.tc6.outputs.result}}"
+          TC7_RESULTS: "${{steps.tc7.outputs.result}}"
+          TC8_RESULTS: "${{steps.tc8.outputs.result}}"
+          TC9_RESULTS: "${{steps.tc9.outputs.result}}"
+          TC10_RESULTS: "${{steps.tc10.outputs.result}}"
+        with:
+          runners: tc1,tc2,tc3,tc4,tc5,tc6,tc7,tc8,tc9,tc10
