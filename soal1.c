@@ -7,7 +7,6 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 
 int main(){
     int izin = 0;
@@ -16,10 +15,6 @@ int main(){
     int jam = 0;
 
     scanf("%d %d %d %d", &izin, &suhu, &radiasi, &jam);
-
-    suhu = suhu/10;
-
-    printf("suhu = %d\n", suhu);
 
     if (radiasi >= 6){
         printf("TOLAK\n");
