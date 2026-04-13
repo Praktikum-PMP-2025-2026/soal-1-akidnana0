@@ -8,14 +8,7 @@
 
 #include <stdio.h>
 
-int main(){
-    int izin = 0;
-    int suhu = 0;
-    int radiasi = 0;
-    int jam = 0;
-
-    scanf("%d %d %d %d", &izin, &suhu, &radiasi, &jam);
-
+void CekStatusAkhir (int izin, int suhu, int radiasi, int jam){
     if (radiasi >= 6){
         printf("TOLAK\n");
     }
@@ -40,5 +33,16 @@ int main(){
     else {
         printf("TOLAK\n");
     }
+}
+
+int main(){
+    int izin = 0;
+    int suhu = 0;
+    int radiasi = 0;
+    int jam = 0;
+
+    scanf("%d %d %d %d", &izin, &suhu, &radiasi, &jam);
+    CekStatusAkhir(izin, suhu, radiasi, jam);
+
     return 0;
 }
